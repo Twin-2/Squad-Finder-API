@@ -5,6 +5,7 @@ const app = express();
 const cors = require('cors');
 const authrouter = require('./routes/sign-in')
 const errorHandler = require('./error-handlers/errorHandler');
+const friendRouter = require('./routes/resource-routes/friendsRoutes');
 
 //require error handlers
 //require routes
@@ -12,6 +13,7 @@ const errorHandler = require('./error-handlers/errorHandler');
 app.use(express.json());
 app.use(cors());
 app.use(authrouter)
+app.use(friendRouter)
 //app.use routes
 //app.use errors
 

@@ -32,39 +32,39 @@ users.belongsToMany(squads, {
   through: 'team',
   onDelete: 'cascade'
 });
-  squads.belongsTo(users);
+squads.belongsTo(users);
 // Creates a one-to-many relationship between profiles and achievements
 // A Profile has many achievements and Achievements belong to one 
 // Profile
 profiles.hasMany(achievements, {
   onDelete: 'cascade'
 });
-  achievements.belongsTo(profiles);
+achievements.belongsTo(profiles);
 // Creates a one-to-one relationship between users and profiles
 // A User has one Profile and a Profile belongs to one User
 users.hasOne(profiles, {
   onDelete: 'cascade'
 });
-  profiles.belongsTo(users)
+profiles.belongsTo(users)
 // Cretes a many-to-many relationship between users
 // A User has many Users
 // This allows the creation of Friends through a junction table called
 // friends
-users.belongsToMany(users, { 
-  as: 'Friends', 
+users.belongsToMany(users, {
+  as: 'Friends',
   through: 'friends'
 });
 
-users.belongsToMany(users, { 
-  as: 'Requestees', 
-  through: 'friendRequests', 
-  foreignKey: 'requesterId', 
+users.belongsToMany(users, {
+  as: 'Requestees',
+  through: 'friendRequests',
+  foreignKey: 'requesterId',
   onDelete: 'CASCADE'
 });
-users.belongsToMany(users, { 
-  as: 'Requesters', 
-  through: 'friendRequests', 
-  foreignKey: 'requesteeId', 
+users.belongsToMany(users, {
+  as: 'Requesters',
+  through: 'friendRequests',
+  foreignKey: 'requesteeId',
   onDelete: 'CASCADE'
 });
 
@@ -72,5 +72,5 @@ module.exports = {
   db: sequelize,
   users: users,
   squads: squads,
-  achievements: achievements
+  achievements: achievements,
 }

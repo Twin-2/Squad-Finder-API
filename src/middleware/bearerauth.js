@@ -1,7 +1,7 @@
 'use strict';
 var createError = require('http-errors');
 
-const { users } = require('..models/user.js');
+const { users } = require('../schemas/index');
 
 module.exports = async (req, res, next) => {
   try {
