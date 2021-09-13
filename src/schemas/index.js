@@ -31,12 +31,6 @@ users.hasMany(achievements, {
   onDelete: "cascade"
 });
   achievements.belongsTo(users);
-//friends==============
-users.hasMany(users, {
-  onDelete: "cascade"
-});
-  users.belongsTo(users)
-//======================
 squads.hasMany(users, {
   onDelete: "cascade"
 });
