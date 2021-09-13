@@ -1,21 +1,24 @@
 'use strict';
-var createError = require('http-errors');
+const createError = require('http-errors');
 
-const { users } = require('../schemas/index');
+
+const { User } = require('../schemas/index');
+var createError = require('http-errors');
 
 module.exports = async (req, res, next) => {
   try {
+    console.log('here');
     if (!req.headers.authorization) {
-      return next(createError('No Authorization header attached', 403));
+      return next(createError(403, 'Authentication Error'));
     }
-
     const token = req.headers.authorization.split(' ').pop();
-    const validUser = await users.authenticateToken(token);
+    const validUser = await User.authenticateToken(token);
 
     req.user = validUser;
     req.token = validUser.token;
+    console.log('here3');
     next();
   } catch (e) {
-    return next(createError('No Authorization header attached', 403));
+    return next(createError(403, 'Authentication Error'));
   }
 };
