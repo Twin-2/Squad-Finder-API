@@ -4,7 +4,7 @@ const express = require('express');
 const achievementsRouter = express.Router();
 const bearerAuth = require('../../middleware/bearerauth.js');
 const acl = require('../../middleware/acl.js');
-const { user, achievements } = require('../../schemas/index.js');
+const { achievements } = require('../../schemas/index.js');
 
 
 const handleCreate = async (req, res, next) => {
@@ -22,7 +22,7 @@ const handleGetAll = async (req, res, next) => {
   try {
       let id = req.user.id;
       // Should pull all achievements associated with one user.
-      let records = await achievements.findAll({ where: id });
+      let records = await achievements.findAll({ where: { UserId: id } });
       if (records.length === 0) {
           return next(new HttpError("No achievements for this user", 404));
       }
@@ -94,4 +94,7 @@ achievementsRouter.post('/achievements', bearerAuth, acl('create'), handleCreate
 achievementsRouter.get('/achievements', bearerAuth, acl('read'), handleGetAll);
 achievementsRouter.get('/achievements/:id', bearerAuth, acl('read'), handleGetOne);
 achievementsRouter.put('/achievements/:id', bearerAuth, acl('update'), handleUpdate);
-achievementsRouter.delete('/achievements/:id', bearerAuth, acl(''), handleDelete);
+achievementsRouter.delete('/achievements/:id', bearerAuth, acl('delete'), handleDelete);
+
+
+module.exports = achievementsRouter;
