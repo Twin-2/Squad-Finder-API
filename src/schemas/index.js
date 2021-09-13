@@ -2,10 +2,9 @@
 
 require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
-//DataTypes is greyed out on my file. Why?
-const userSchema = require('./user-schema.js');
-const squadSchema = require('./squad-schema.js');
-const achievementsSchema = require('./achievements-schema.js');
+const userModel = require('./user-schema.js');
+const squadModel = require('./squad-schema.js')
+const achievementModel = require('./achievements-schema.js')
 
 const DATABASE_URL = process.env.NODE_ENV === 'test' ? 'sqlite:memory' : process.env.DATABASE_URL;
 
@@ -20,11 +19,28 @@ let sequelizeOptions = process.env.NODE_ENV === 'production' ? {
 
 const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
 
-const users = userSchema(sequelize, DataTypes);
-const squads = squadSchema(sequelize, DataTypes);
-const achievements = achievementsSchema(sequelize, DataTypes);
+const users = userModel(sequelize, DataTypes)
+const squads = squadModel(sequelize, DataTypes)
+const achievements = achievementModel(sequelize, DataTypes)
 
-//define SQL relational ownership here
+users.hasMany(squads, {
+  onDelete: "cascade"
+});
+  squads.belongsTo(users);
+users.hasMany(achievements, {
+  onDelete: "cascade"
+});
+  achievements.belongsTo(users);
+//friends==============
+users.hasMany(users, {
+  onDelete: "cascade"
+});
+  users.belongsTo(users)
+//======================
+squads.hasMany(users, {
+  onDelete: "cascade"
+});
+  users.belongsTo(squads)
 
 module.exports = {
   db: sequelize,

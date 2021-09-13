@@ -1,38 +1,26 @@
-'use strict'
+'use strict';
 
 require('dotenv').config();
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const SECRET = process.env.SECRET;
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.SECRET || 'secretstring';
 
-const userSchema = (sequelize, DataTypes) => {
-  const model = sequelize.define("Users", {
-    username: { type: DataTypes.STRING,
-    required: true,
-    unique: true },
-    password: { type: DataTypes.STRING,
-    required: true },
-    bio: { type: DataTypes.STRING,
-    required: false,
-    unique: false },
-    likedGames: { type: DataTypes.STRING,
-    require: false,
-    unique: false },
-    //matches/friends
-    role: { type: DataTypes.ENUM('user', 'writer', 'editor', 'admin'),
-    required: true,
-    defaultValue: 'editor' },
+const userModel = (sequelize, DataTypes) => {
+  const model = sequelize.define('Users', {
+    username: { type: DataTypes.STRING, required: true, unique: true },
+    password: { type: DataTypes.STRING, required: true },
+    role: { type: DataTypes.ENUM('user', 'writer', 'editor', 'admin'), required: true, defaultValue: 'admin'},
     token: {
       type: DataTypes.VIRTUAL,
       get() {
         return jwt.sign({ username: this.username }, SECRET);
       },
-      set(jwtToken) {
-        let token = jwt.sign(jwtToken, SECRET);
+      set(tokenObj) {
+        let token = jwt.sign(tokenObj, SECRET);
         return token;
       }
     },
-    permissions: {
+    capabilities: {
       type: DataTypes.VIRTUAL,
       get() {
         const acl = {
@@ -41,7 +29,7 @@ const userSchema = (sequelize, DataTypes) => {
           editor: ['read', 'create', 'update'],
           admin: ['read', 'create', 'update', 'delete']
         };
-        return acl[this.role]
+        return acl[this.role];
       }
     }
   });
@@ -55,20 +43,21 @@ const userSchema = (sequelize, DataTypes) => {
     const user = await this.findOne({ where: { username } });
     const valid = await bcrypt.compare(password, user.password);
     if (valid) { return user; }
-    throw new Error('User Invalid');
-  }
+    throw new Error('Invalid User');
+  };
 
   model.authenticateToken = async function (token) {
     try {
       const parsedToken = jwt.verify(token, SECRET);
-      const user = await this.findOne({ where: { username: parsedToken.username } });
+      const user = this.findOne({where: { username: parsedToken.username } });
       if (user) { return user; }
-      throw new Error('User Not Found');
+      throw new Error("User Not Found");
     } catch (e) {
       throw new Error(e.message)
     }
-  }
+  };
+
   return model;
 }
 
-module.exports = userSchema; 
+module.exports = userModel;
