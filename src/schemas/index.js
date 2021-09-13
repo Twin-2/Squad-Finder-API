@@ -1,8 +1,8 @@
 'use strict';
 
 require('dotenv').config();
-const { Sequelize, DataTypes } = require('sequelize');
-const userModel = require('./user-schema.js');
+const { Sequelize, DataTypes } = require('sequelize')
+const userModel = require('./user-schema.js')
 const squadModel = require('./squad-schema.js')
 const achievementModel = require('./achievements-schema.js')
 const profileModel = require('./profile-schema.js')
@@ -51,7 +51,7 @@ users.hasOne(profiles, {
 // This allows the creation of Friends through a junction table called
 // friends
 users.belongsToMany(users, { 
-  as: 'Friends', 
+  as: 'Friends',
   through: 'friends'
 });
 
@@ -72,5 +72,6 @@ module.exports = {
   db: sequelize,
   users: users,
   squads: squads,
-  achievements: achievements
+  achievements: achievements,
+  profiles: profiles
 }
