@@ -23,18 +23,19 @@ const users = userModel(sequelize, DataTypes)
 const squads = squadModel(sequelize, DataTypes)
 const achievements = achievementModel(sequelize, DataTypes)
 
-users.hasMany(squads, {
-  onDelete: "cascade"
+users.belongsToMany(squads, {
+  through: 'C',
+  onDelete: 'cascade'
 });
   squads.belongsTo(users);
 users.hasMany(achievements, {
-  onDelete: "cascade"
+  onDelete: 'cascade'
 });
   achievements.belongsTo(users);
-squads.hasMany(users, {
-  onDelete: "cascade"
-});
-  users.belongsTo(squads)
+// squads.hasMany(users, {
+//   onDelete: "cascade"
+// });
+//   users.belongsTo(squads)
 
 module.exports = {
   db: sequelize,
