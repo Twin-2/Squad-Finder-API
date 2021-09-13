@@ -1,6 +1,5 @@
 'use strict';
 var createError = require('http-errors');
-
 const { users } = require('../schemas/index.js');
 
 module.exports = async (req, res, next) => {
