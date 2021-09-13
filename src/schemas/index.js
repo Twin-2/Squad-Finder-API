@@ -13,13 +13,13 @@ const DATABASE_URL =
 let sequelizeOptions =
   process.env.NODE_ENV === 'production'
     ? {
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
         },
-      }
+      },
+    }
     : {};
 
 const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
@@ -41,6 +41,7 @@ Squad.belongsTo(User);
 // A Profile has many Achievement and Achievement belong to one
 
 // Profile
+console.log('@@@@@@@', Profile)
 Profile.hasMany(Achievement, {
   onDelete: 'cascade',
 });
