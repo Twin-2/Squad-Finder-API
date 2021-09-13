@@ -84,7 +84,7 @@ const handleDelete = async (req, res, next) => {
   if ((req.user.role === 'admin') || (record.UserId === user)) {
       try {
           let deleted = await achievements.destroy({ where: { id } });
-          res.status(202).send(deleted);
+          res.status(202).send("achievement deleted");
       } catch (e) {
           return next(createError(404, "Could not find achievement"));
       }
