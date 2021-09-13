@@ -74,6 +74,7 @@ User.belongsToMany(User, {
 module.exports = {
   db: sequelize,
   User: User,
+  Profile: Profile,
   Squad: Squad,
   Achievement: Achievement,
 };
