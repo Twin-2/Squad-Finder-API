@@ -1,0 +1,39 @@
+{
+  "name": "squad-finder-api",
+  "version": "1.0.0",
+  "description": "Contributers: Jaya DeHart, David Whitmore, Jessica Parker, Rachael Rice, Gina Hobbs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "init:config": "sequelize init:config",
+    "db:create": "sequelize db:create",
+    "lint": "eslint **/*.js",
+    "test": "NODE_ENV=test jest --coverage",
+    "test-watch": "jest --watchAll --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Javascript-Code-Fellowship/Squad-Finder-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Javascript-Code-Fellowship/Squad-Finder-API/issues"
+  },
+  "homepage": "https://github.com/Javascript-Code-Fellowship/Squad-Finder-API#readme",
+  "dependencies": {
+    "base-64": "^1.0.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jest": "^27.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.1",
+    "sequelize": "^6.6.5",
+    "sequelize-cli": "^6.2.0",
+    "sqlite3": "^5.0.2",
+    "supertest": "^6.1.6"
+  }
+}
