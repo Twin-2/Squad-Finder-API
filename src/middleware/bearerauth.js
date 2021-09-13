@@ -1,10 +1,13 @@
 'use strict';
+var createError = require('http-errors');
 
 const { users } = require('..models/user.js');
 
 module.exports = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) { _authError() }
+    if (!req.headers.authorization) {
+      return next(createError('No Authorization header attached', 403));
+    }
 
     const token = req.headers.authorization.split(' ').pop();
     const validUser = await users.authenticateToken(token);
@@ -12,12 +15,7 @@ module.exports = async (req, res, next) => {
     req.user = validUser;
     req.token = validUser.token;
     next();
-
   } catch (e) {
-    _authError();
+    return next(createError('No Authorization header attached', 403));
   }
-
-  function _authError() {
-    res.status(403).send('Login Failed')
-  }
-} 
+};
