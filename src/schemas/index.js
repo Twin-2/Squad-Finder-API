@@ -1,21 +1,20 @@
 'use strict';
 
+require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
 const userModel = require('./user-schema.js');
 const squadModel = require('./squad-schema.js')
 const achievementModel = require('./achievements-schema.js')
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.NODE_ENV === 'test' ? 'sqlite:memory' : process.env.DATABASE_URL;
 
 let sequelizeOptions = process.env.NODE_ENV === 'production' ? {
-  // this is about Heroku and ensuring SSL is enabled
   dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
     }
   }
-  // otherwise, we don't need any dialect options - it will default to {} standard
 } : {};
 
 const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
@@ -42,7 +41,6 @@ squads.hasMany(users, {
   onDelete: "cascade"
 });
   users.belongsTo(squads)
-
 
 module.exports = {
   db: sequelize,

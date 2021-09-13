@@ -1,8 +1,8 @@
 'use strict';
 
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const SECRET = process.env.SECRET || 'secretstring';
 
 const userModel = (sequelize, DataTypes) => {
