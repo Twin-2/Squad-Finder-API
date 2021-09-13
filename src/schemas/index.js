@@ -35,19 +35,24 @@ User.belongsToMany(Squad, {
   through: 'team',
   onDelete: 'cascade',
 });
+
 Squad.belongsTo(User);
 // Creates a one-to-many relationship between Profile and Achievement
 // A Profile has many Achievement and Achievement belong to one
+
 // Profile
 Profile.hasMany(Achievement, {
   onDelete: 'cascade',
 });
+
 Achievement.belongsTo(Profile);
 // Creates a one-to-one relationship between User and Profile
+
 // A User has one Profile and a Profile belongs to one User
 User.hasOne(Profile, {
   onDelete: 'cascade',
 });
+
 Profile.belongsTo(User);
 // Cretes a many-to-many relationship between User
 // A User has many User
@@ -69,6 +74,7 @@ User.belongsToMany(User, {
   through: 'friendRequests',
   foreignKey: 'requesteeId',
   onDelete: 'CASCADE',
+
 });
 
 module.exports = {
