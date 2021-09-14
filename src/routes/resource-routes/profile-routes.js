@@ -3,7 +3,7 @@
 const express = require('express');
 const profileRouter = express.Router();
 const bearerAuth = require('../../middleware/bearerauth.js')
-const { users, profiles } = require('../../schemas/index.js')
+const { User, Profile } = require('../../schemas/index.js')
 // const HttpError = require("../error-handlers/http-error");
 const acl = require('../../middleware/acl.js');
 
@@ -13,7 +13,7 @@ const handleCreate = async (req, res, next) => {
       let userid = req.user.id
       let { bio, game } = req.body
       console.log('here')
-      let record = await profiles.create({ bio, game, UserId: userid })
+      let record = await Profile.create({ bio, game, UserId: userid })
       res.status(201).send(record)
   } catch (e) {
       // return next(new HttpError("Something went wrong", 500))
@@ -28,7 +28,7 @@ const handleGetOne = async (req, res, next) => {
 //   }
   try {
       let id = req.user.id;
-      let record = await profiles.findOne({ where: { UserId: id } });
+      let record = await Profile.findOne({ where: { UserId: id } });
       res.status(200).send(record)
   } catch (e) {
       // return next(new HttpError("Could not find that profile", 404))
@@ -43,12 +43,12 @@ const handleUpdateOne = async (req, res, next) => {
     // }
     let userid = req.user.id;
     let id = req.params.id
-    let record = await profiles.findOne({ where: {UserId: userid} })
+    let record = await Profile.findOne({ where: {UserId: userid} })
     console.log(req.user.role)
     if ((req.user.role === 'admin') || (record.UserId === userid)) {
         try {
             let obj = req.body
-            let updated = await profiles.update(obj, { where: { UserId: userid } });
+            let updated = await Profile.update(obj, { where: { UserId: userid } });
             res.status(202).send(updated);
         } catch (e) {
             // return next(new HttpError("Could not find that note", 404))
@@ -68,10 +68,10 @@ const handleDeleteOne = async (req, res, next) => {
     // }
     let userid = req.user.id;
     let id = req.params.id
-    let record = await profiles.findOne({ where: {UserId: userid} })
+    let record = await Profile.findOne({ where: {UserId: userid} })
     if ((req.user.role === 'admin')) {
         try {
-            let deleted = await profiles.destroy({ where: { UserId: userid } })
+            let deleted = await Profile.destroy({ where: { UserId: userid } })
             res.status(202).send("profile was deleted")
         } catch (e) {
             // return next(new HttpError("Could not find that profile", 404))
