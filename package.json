@@ -9,7 +9,7 @@
     "db:create": "sequelize db:create",
     "lint": "eslint **/*.js",
     "test": "NODE_ENV=test jest --coverage --verbose",
-    "test-watch": "jest --watchAll --coverage"
+    "test-watch": "jest --watchAll --coverage --verbose"
   },
   "repository": {
     "type": "git",
