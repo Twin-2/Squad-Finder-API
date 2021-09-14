@@ -1,23 +1,21 @@
 'use strict';
-
-const { users } = require('..models/user.js');
+const createError = require('http-errors');
+const { User } = require('../schemas/index');
 
 module.exports = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) { _authError() }
-
+    console.log('here');
+    if (!req.headers.authorization) {
+      return next(createError(403, 'Authentication Error'));
+    }
     const token = req.headers.authorization.split(' ').pop();
-    const validUser = await users.model.authenticateToken(token);
+    const validUser = await User.authenticateToken(token);
 
     req.user = validUser;
     req.token = validUser.token;
+    console.log('here3');
     next();
-
   } catch (e) {
-    _authError();
+    return next(createError(403, 'Authentication Error'));
   }
-
-  function _authError() {
-    res.status(403).send('Login Failed')
-  }
-} 
+};
