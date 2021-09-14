@@ -6,18 +6,6 @@ const { User, db } = require('../../schemas/index.js');
 const bearerAuth = require('../../middleware/bearerauth.js');
 const createError = require('http-errors');
 
-//this route is to show users on the Find Friends page
-//route for getting all friends(users). UI will handle filtering for display.
-friendsRouter.get('/findFriends', async (req, res, next) => {
-    try {
-        console.log('here')
-        let friends = await User.findAll({})
-        res.status(201).send(friends)
-    } catch (err) {
-        console.log(err)
-        next(createError(404, err.message))
-    }
-})
 
 // ___REFACTOR___
 //this file needs to have the DB actions changed over to the simpler .set<name> method
@@ -25,7 +13,7 @@ friendsRouter.get('/findFriends', async (req, res, next) => {
 
 // route for adding frinds from the search page to the friend request table
 //QUESTION: What should be returned here?
-friendsRouter.post('/findFriends/:id', bearerAuth, async (req, res, next) => {
+const addFriendRequest = async (req, res, next) => {
     try {
         console.log('here')
         let id = req.params.id
@@ -38,12 +26,25 @@ friendsRouter.post('/findFriends/:id', bearerAuth, async (req, res, next) => {
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
 
-// { UserId: userId, FriendId: id }
 
+
+
+//this route is to show users on the Find Friends page
+//route for getting all friends(users). UI will handle filtering for display.
+const findFriends = async (req, res, next) => {
+    try {
+        console.log('here')
+        let friends = await User.findAll({})
+        res.status(201).send(friends)
+    } catch (err) {
+        console.log(err)
+        next(createError(404, err.message))
+    }
+}
 //show all friend requests
-friendsRouter.get('/friendRequests', bearerAuth, async (req, res, next) => {
+const showAllRequests = async (req, res, next) => {
     try {
         let id = req.user.id
         let requests = await db.models.friendRequests.findAll({ where: { requesteeId: id } })
@@ -56,10 +57,10 @@ friendsRouter.get('/friendRequests', bearerAuth, async (req, res, next) => {
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
 //reject a friend request
 //__ADD--STRETCH__ : send a notification to the user you rejected
-friendsRouter.delete('/friendRequests/:id', bearerAuth, async (req, res, next) => {
+const rejectRequest = async (req, res, next) => {
     try {
         let id = req.params.id;
         let userId = req.user.id
@@ -73,10 +74,10 @@ friendsRouter.delete('/friendRequests/:id', bearerAuth, async (req, res, next) =
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
 
 //accept a friend request
-friendsRouter.post('/friendRequests/:id', bearerAuth, async (req, res, next) => {
+const acceptRequest = async (req, res, next) => {
     try {
         console.log('here')
         let id = req.params.id;
@@ -90,10 +91,11 @@ friendsRouter.post('/friendRequests/:id', bearerAuth, async (req, res, next) => 
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
+
 
 //route for showing friends on the friends page after they have been added
-friendsRouter.get('/userFriends', bearerAuth, async (req, res, next) => {
+const showFriends = async (req, res, next) => {
     try {
         console.log('here')
         let id = req.user.id
@@ -108,10 +110,10 @@ friendsRouter.get('/userFriends', bearerAuth, async (req, res, next) => {
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
 
 // route for deleting friends
-friendsRouter.delete('/userFriends/:id', bearerAuth, async (req, res, next) => {
+const deleteFriend = async (req, res, next) => {
     try {
         console.log('here')
         let id = req.params.id;
@@ -123,19 +125,18 @@ friendsRouter.delete('/userFriends/:id', bearerAuth, async (req, res, next) => {
         console.log(err)
         next(createError(404, err.message))
     }
-})
+}
 
 
-friendsRouter.get('/users')
+friendsRouter.get('/users', bearerAuth, findFriends)
+friendsRouter.get('/friendRequests', bearerAuth, showAllRequests)
+friendsRouter.delete('/friendRequests/:id', bearerAuth, rejectRequest)
+friendsRouter.post('/friendRequests/:id', bearerAuth, acceptRequest)
 
-friendsRouter.get('/friendRequests')
-friendsRouter.delete('/friendRequests/:id')
-friendsRouter.post('/friendRequests/:id')
 
-
-friendsRouter.post('/friends/:id')
-friendsRouter.delete('/friends/:id')
-friendsRouter.get('/friends')
+friendsRouter.post('/friends/:id', bearerAuth, addFriendRequest)
+friendsRouter.get('/friends', bearerAuth, showFriends)
+friendsRouter.delete('/friends/:id', bearerAuth, deleteFriend)
 
 friendsRouter.delete('/blockFriend/:id')
 
