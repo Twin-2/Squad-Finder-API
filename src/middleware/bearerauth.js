@@ -13,7 +13,6 @@ module.exports = async (req, res, next) => {
 
     req.user = validUser;
     req.token = validUser.token;
-    console.log('here3');
     next();
   } catch (e) {
     return next(createError(403, 'Authentication Error'));
