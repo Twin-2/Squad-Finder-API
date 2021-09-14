@@ -125,4 +125,22 @@ friendsRouter.delete('/userFriends/:id', bearerAuth, async (req, res, next) => {
     }
 })
 
+
+friendsRouter.get('/users')
+
+friendsRouter.get('/friendRequests')
+friendsRouter.delete('/friendRequests/:id')
+friendsRouter.post('/friendRequests/:id')
+
+
+friendsRouter.post('/friends/:id')
+friendsRouter.delete('/friends/:id')
+friendsRouter.get('/friends')
+
+friendsRouter.delete('/blockFriend/:id')
+
+
+
+
+
 module.exports = friendsRouter
