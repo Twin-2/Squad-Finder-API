@@ -1,4 +1,6 @@
+memory
 .env
+
 # Logs
 logs
 *.log
