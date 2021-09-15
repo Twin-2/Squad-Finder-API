@@ -7,7 +7,7 @@ const squadRouter = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const createError = require('http-errors');
 
-squadRouter.get('/squads', bearerAuth, async (req, res, next) => {
+const getUserSquads = async (req, res, next) => {
   //find the user model from the request
   const user = await User.findOne({ where: { username: req.user.username } });
   //find all squads that current user belongs to
@@ -43,9 +43,9 @@ squadRouter.get('/squads', bearerAuth, async (req, res, next) => {
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
+};
 
-squadRouter.post('/squads', bearerAuth, async (req, res, next) => {
+const createSquad = async (req, res, next) => {
   try {
     const newSquad = await db.models.Squads.create({
       name: uuidv4(),
@@ -67,9 +67,9 @@ squadRouter.post('/squads', bearerAuth, async (req, res, next) => {
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
+};
 
-squadRouter.delete('/squads', bearerAuth, async (req, res, next) => {
+const deleteSquad = async (req, res, next) => {
   let user = await User.findOne({ where: { username: req.user.username } });
   let { SquadId } = req.body;
   try {
@@ -84,6 +84,12 @@ squadRouter.delete('/squads', bearerAuth, async (req, res, next) => {
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
+};
+
+squadRouter.get('/squads', bearerAuth, getUserSquads);
+
+squadRouter.post('/squads', bearerAuth, createSquad);
+
+squadRouter.delete('/squads', bearerAuth, deleteSquad);
 
 module.exports = squadRouter;
