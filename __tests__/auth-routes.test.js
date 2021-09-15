@@ -41,7 +41,7 @@ describe('AUTH ROUTES', () => {
       expect(token).toBeDefined();
   })
 
-  it('should responsd with a 404 at a route that does not exist', async () => {
+  it('should respond with a 404 at a route that does not exist', async () => {
     const response = await mockRequest.get('/notexist');
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Route not found')
