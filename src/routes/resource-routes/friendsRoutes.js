@@ -20,7 +20,7 @@ const addFriendRequest = async (req, res, next) => {
         let userId = req.user.id
         //create a new friend on the appropriate table with the id of the user that was clicked on.
         let added = await db.models.friendRequests.create({ requesterId: userId, requesteeId: id })
-        console.log(added)
+        console.log(typeof added)
         res.status(202).send(added)
     } catch (err) {
         console.log(err)
@@ -127,8 +127,24 @@ const deleteFriend = async (req, res, next) => {
     }
 }
 
+// route for blocking friend
 
-friendsRouter.get('/users', bearerAuth, findFriends)
+const blockFriend = async (req, res, next) => {
+    try {
+        console.log("@@@@@userID", req.user.id);
+        let id = req.params.id;
+        let userId = req.user.id;
+        await db.models.blockedusers.create({ where: { UserId: userId, BlockedUserId: id } });
+        await db.models.friends.destroy({ where: { UserId: userId, FriendId: id } });
+        res.status(202).send('Friend has been successfully blocked');
+    } catch (err) {
+        console.log(err)
+        next(createError(404, err.message))
+    }
+}
+
+
+friendsRouter.get('/users', findFriends)
 friendsRouter.get('/friendRequests', bearerAuth, showAllRequests)
 friendsRouter.delete('/friendRequests/:id', bearerAuth, rejectRequest)
 friendsRouter.post('/friendRequests/:id', bearerAuth, acceptRequest)
@@ -138,10 +154,12 @@ friendsRouter.post('/friends/:id', bearerAuth, addFriendRequest)
 friendsRouter.get('/friends', bearerAuth, showFriends)
 friendsRouter.delete('/friends/:id', bearerAuth, deleteFriend)
 
-friendsRouter.delete('/blockFriend/:id')
+friendsRouter.delete('/blockFriend/:id', bearerAuth, blockFriend)
 
 
 
 
 
 module.exports = friendsRouter
+
+
