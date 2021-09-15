@@ -66,7 +66,7 @@ const rejectRequest = async (req, res, next) => {
         let userId = req.user.id
         let requests = await db.models.friendRequests.destroy({ where: { requesterId: id, requesteeId: userId } })
         let body = {
-            messege: "deleted",
+            message: "deleted",
             data: requests
         }
         res.status(202).send(body)

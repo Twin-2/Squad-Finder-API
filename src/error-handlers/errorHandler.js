@@ -1,3 +1,5 @@
+'use strict';
+
 async function handleErrors(err, req, res, next) {
   if (res.headersSent) {
     return;
