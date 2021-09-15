@@ -9,10 +9,7 @@ const achievementsRouter = require('./routes/resource-routes/achievementsRoutes.
 const profilerouter = require('./routes/resource-routes/profile-routes.js');
 const errorHandler = require('./error-handlers/errorHandler');
 const friendsRouter = require('./routes/resource-routes/friendsRoutes');
-const noRouteHandler = require('../src/error-handlers/404.js')
-
-//require error handlers
-//require routes
+const noRouteHandler = require('../src/error-handlers/404.js');
 
 app.use(express.json());
 app.use(cors());
@@ -23,9 +20,7 @@ app.use(achievementsRouter);
 app.use(profilerouter);
 app.use(friendsRouter);
 
-//app.use routes
-//app.use errors
-app.use('*', noRouteHandler)
+app.use('*', noRouteHandler);
 app.use(errorHandler);
 
 function start(PORT) {
