@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 const supertest = require('supertest');
-const { app } = require('../src/server.js');
-const { db } = require('../src/schemas/index.js');
+const { app } = require('../../src/server.js');
+const { db } = require('../../src/schemas/index.js');
 const { expect } = require('@jest/globals');
 
 const mockRequest = supertest(app);
