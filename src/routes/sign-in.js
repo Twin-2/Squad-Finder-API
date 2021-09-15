@@ -19,9 +19,10 @@ authRouter.post('/signup', async (req, res, next) => {
     if (e.message == 'Validation error') {
       // return next(new HttpError("Username in use", 409))
       res.status(409).send('Username in use.');
-    }
+    } else {
     // return next(new HttpError("You need both username and password to sign up", 406))
-    res.status(406).send('You need both username and password to sign up.');
+      res.status(406).send('You need both username and password to sign up.');
+    }
   }
 });
 
