@@ -18,13 +18,14 @@ const addFriendRequest = async (req, res, next) => {
         console.log('here')
         let id = req.params.id
         let userId = req.user.id
+        if (id == userId) { next(createError(406, 'Cannot add yourself as friend')) }
         //create a new friend on the appropriate table with the id of the user that was clicked on.
         let added = await db.models.friendRequests.create({ requesterId: userId, requesteeId: id })
         console.log(typeof added)
         res.status(202).send(added)
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 
@@ -33,14 +34,14 @@ const addFriendRequest = async (req, res, next) => {
 
 //this route is to show users on the Find Friends page
 //route for getting all friends(users). UI will handle filtering for display.
-const findFriends = async (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
     try {
-        console.log('here')
-        let friends = await User.findAll({})
-        res.status(201).send(friends)
+        let users = await User.findAll({});
+        if (users.length === 0) {next(createError(404, 'No users found'))}
+        res.status(201).send(users)
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 //show all friend requests
@@ -52,10 +53,11 @@ const showAllRequests = async (req, res, next) => {
             let data = User.findOne({ where: { id: value.dataValues.requesterId } })
             return data
         }))
+        if (list.length === 0) {next(createError(404, 'No requests found'))}
         res.status(200).send(list)
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 //reject a friend request
@@ -72,7 +74,7 @@ const rejectRequest = async (req, res, next) => {
         res.status(202).send(body)
     } catch (err) {
       console.log(err);
-      next(createError(404, err.message));
+      next(createError(500, err.message));
     }
 }
 
@@ -93,7 +95,7 @@ const acceptRequest = async (req, res, next) => {
       res.status(202).send(friends);
     } catch (err) {
       console.log(err);
-      next(createError(404, err.message));
+      next(createError(500, err.message));
     }
 }
 
@@ -112,7 +114,7 @@ const showFriends = async (req, res, next) => {
         res.status(202).send(list)
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 
@@ -127,7 +129,7 @@ const deleteFriend = async (req, res, next) => {
         res.status(202).send('Deleted friend')
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 
@@ -135,33 +137,29 @@ const deleteFriend = async (req, res, next) => {
 
 const blockFriend = async (req, res, next) => {
     try {
-        console.log("@@@@@userID", req.user.id);
         let id = req.params.id;
         let userId = req.user.id;
-        await db.models.blockedusers.create({ where: { UserId: userId, BlockedUserId: id } });
-        await db.models.friends.destroy({ where: { UserId: userId, FriendId: id } });
+        await db.models.blockedusers.create({ UserId: userId, BlockedUserId: id });
+        const response = await db.models.friends.destroy({ where: { UserId: userId, FriendId: id } });
         res.status(202).send('Friend has been successfully blocked');
     } catch (err) {
         console.log(err)
-        next(createError(404, err.message))
+        next(createError(500, err.message))
     }
 }
 
 
-friendsRouter.get('/users', findFriends)
+friendsRouter.get('/users', bearerAuth, getAllUsers)
 friendsRouter.get('/friendRequests', bearerAuth, showAllRequests)
 friendsRouter.delete('/friendRequests/:id', bearerAuth, rejectRequest)
-friendsRouter.post('/friendRequests/:id', bearerAuth, acceptRequest)
+friendsRouter.post('/friends/:id', bearerAuth, acceptRequest)
 
 
-friendsRouter.post('/friends/:id', bearerAuth, addFriendRequest)
+friendsRouter.post('/friendRequests/:id', bearerAuth, addFriendRequest)
 friendsRouter.get('/friends', bearerAuth, showFriends)
 friendsRouter.delete('/friends/:id', bearerAuth, deleteFriend)
 
 friendsRouter.delete('/blockFriend/:id', bearerAuth, blockFriend)
-
-
-
 
 
 module.exports = friendsRouter
