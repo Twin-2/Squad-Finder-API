@@ -13,9 +13,9 @@ module.exports = async (req, res, next) => {
   let [user, pass] = base64.decode(basic).split(':');
 
   try {
-    req.user = await User.authenticateBasic(user, pass)
+    req.user = await User.authenticateBasic(user, pass);
     next();
   } catch (e) {
-    return next(createError('No such user', 403));
+    return next(createError('Incorrect credentials', 403));
   }
 };

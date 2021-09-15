@@ -9,7 +9,7 @@ const createError = require('http-errors');
 
 // ___REFACTOR___
 //this file needs to have the DB actions changed over to the simpler .set<name> method
-//We also need to consider how this file can be seperated due to the complexity of all the routes. 
+//We also need to consider how this file can be seperated due to the complexity of all the routes.
 
 // route for adding frinds from the search page to the friend request table
 //QUESTION: What should be returned here?
@@ -71,25 +71,29 @@ const rejectRequest = async (req, res, next) => {
         }
         res.status(202).send(body)
     } catch (err) {
-        console.log(err)
-        next(createError(404, err.message))
+      console.log(err);
+      next(createError(404, err.message));
     }
 }
 
 //accept a friend request
 const acceptRequest = async (req, res, next) => {
     try {
-        console.log('here')
-        let id = req.params.id;
-        let userId = req.user.id
-        //take in an id, use that id to create a relationship on the friends table with the user and the friend
-        let friends = await db.models.friends.create({ UserId: userId, FriendId: id })
-        //remove that request off the request table
-        await db.models.friendRequests.destroy({ where: { requesterId: id, requesteeId: userId } })
-        res.status(202).send(friends)
+      let id = req.params.id;
+      let userId = req.user.id;
+      //take in an id, use that id to create a relationship on the friends table with the user and the friend
+      let friends = await db.models.friends.create({
+        UserId: userId,
+        FriendId: id,
+      });
+      //remove that request off the request table
+      await db.models.friendRequests.destroy({
+        where: { requesterId: id, requesteeId: userId },
+      });
+      res.status(202).send(friends);
     } catch (err) {
-        console.log(err)
-        next(createError(404, err.message))
+      console.log(err);
+      next(createError(404, err.message));
     }
 }
 

@@ -1,4 +1,4 @@
-'user strict'
+'user strict';
 
 const express = require('express');
 const profileRouter = express.Router();
@@ -78,14 +78,15 @@ const handleDeleteOne = async (req, res, next) => {
             res.status(404).send("could not find that profile")
         }
     }
-    // if (record.UserId !== userid) {
-    //     return next(new HttpError("Action forbidden. Only the user that created the note can delete it.", 403))
-    // }
-}
+  }
+  // if (record.UserId !== userid) {
+  //     return next(new HttpError("Action forbidden. Only the user that created the note can delete it.", 403))
+  // }
+};
 
 profileRouter.post('/profile', bearerAuth, acl('create'), handleCreate);
-profileRouter.get('/profile', bearerAuth, acl('read'), handleGetOne)
-profileRouter.put('/profile', bearerAuth, acl('update'), handleUpdateOne)
-profileRouter.delete('/profile', bearerAuth, acl('delete'), handleDeleteOne)
+profileRouter.get('/profile', bearerAuth, acl('read'), handleGetOne);
+profileRouter.put('/profile', bearerAuth, acl('update'), handleUpdateOne);
+profileRouter.delete('/profile', bearerAuth, acl('delete'), handleDeleteOne);
 
 module.exports = profileRouter;
