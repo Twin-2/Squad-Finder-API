@@ -76,8 +76,7 @@ const handleDeleteOne = async (req, res, next) => {
       // return next(new HttpError("Could not find that profile", 404))
       res.status(404).send('could not find that profile');
     }
-  }
-};
+}
 // if (record.UserId !== userid) {
 //     return next(new HttpError("Action forbidden. Only the user that created the note can delete it.", 403))
 // }
