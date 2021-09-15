@@ -2,7 +2,7 @@
 var createError = require('http-errors');
 
 const base64 = require('base-64');
-const { users } = require('../schemas/index.js');
+const { User } = require('../schemas/index');
 
 module.exports = async (req, res, next) => {
   if (!req.headers.authorization) {
@@ -13,9 +13,9 @@ module.exports = async (req, res, next) => {
   let [user, pass] = base64.decode(basic).split(':');
 
   try {
-    req.user = await users.authenticateBasic(user, pass)
+    req.user = await User.authenticateBasic(user, pass);
     next();
   } catch (e) {
-    return next(createError('No such user', 403));
+    return next(createError('Incorrect credentials', 403));
   }
 };

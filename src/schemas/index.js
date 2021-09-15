@@ -36,7 +36,10 @@ User.belongsToMany(Squad, {
   onDelete: 'cascade',
 });
 
-Squad.belongsTo(User);
+Squad.belongsToMany(User, {
+  through: 'team',
+  onDelete: 'cascade',
+});
 // Creates a one-to-many relationship between Profile and Achievement
 // A Profile has many Achievement and Achievement belong to one
 
