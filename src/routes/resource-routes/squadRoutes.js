@@ -8,9 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const createError = require('http-errors');
 
 const getUserSquads = async (req, res, next) => {
-  //find the user model from the request
   const user = await User.findOne({ where: { username: req.user.username } });
-  //find all squads that current user belongs to
   let userSquadIds;
   try {
     let squads = await db.models.team.findAll({ where: { UserId: user.id } });
@@ -22,7 +20,6 @@ const getUserSquads = async (req, res, next) => {
     return next(createError(403, err.message));
   }
 
-  //find all members of those squads
   try {
     let arr = [];
     for (let x = 0; x < userSquadIds.length; x++) {
