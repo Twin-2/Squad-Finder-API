@@ -12,7 +12,7 @@ let BToken;
 let CToken;
 let DToken;
 
-beforeAll(async () => {
+beforeEach(async () => {
     await db.sync();
     const A = await mockRequest.post('/signup').send({ username: "a", password: "a" })
     const B = await mockRequest.post('/signup').send({ username: "b", password: "b" })
@@ -23,9 +23,9 @@ beforeAll(async () => {
     BToken = B.body.token;
     CToken = C.body.token;
     DToken = D.body.token;
-    
+
 });
-afterAll(async () => {
+afterEach(async () => {
     await db.drop();
 });
 
@@ -39,7 +39,7 @@ describe('FRIEND ROUTES', () => {
         expect(route.body[2].username).toBe('c')
         expect(route.body[3].username).toBe('d')
     })
-    
+
     it("should respond to a POST at /friends/:id by adding a friend request relationship to the DB ", async () => {
         const response = await mockRequest.post('/friendRequests/2').auth(`${AToken}`, { type: 'bearer' });
         console.log('@@@@TEST@@@@', response.body);
@@ -62,30 +62,28 @@ describe('FRIEND ROUTES', () => {
         expect(response.status).toBe(200);
     })
 
-    it('should respond to a DELETE at /friendRequests/:id with deleting that friend request and a message saying "deleted"', async () => {
-        // friend request sent to user A from user B
-        const request = await mockRequest.post('/friends/1').auth(`${BToken}`, { type: 'bearer' });
-        console.log('@@@@TEST@@@@', request.body);
-        // friend request from user B deleted by user A
-        const response = await mockRequest.delete('/friendRequests/2').auth(`${AToken}`, { type: 'bearer' });
-
-        expect(response.body.message).toBe('deleted');
-        expect(response.status).toBe(202);
-    })
 
     it("should respond to a POST at /friendRequests/:id by adding a friend relationship to the DB and removing the request from the DB ", async () => {
         // friend request sent to user A from user B
         const request = await mockRequest.post('/friends/1').auth(`${BToken}`, { type: 'bearer' });
-        console.log('@@@@TEST@@@@', request);
+        // console.log('@@@@TEST@@@@', request);
         // friend request from user B accepted by user A
         const response = await mockRequest.post('/friendRequests/2').auth(`${AToken}`, { type: 'bearer' });
-        // console.log('friend obj', response)
+        console.log('friend obj', response.body.FriendId)
         // we should be able to access the FriendId property, which should have the id of 2.
         // ERROR currently undefined.
-        // expect(response.body.FriendId).toBe(2);
+        expect(response.body.FriendId).toBe('2');
         expect(response.status).toBe(202);
     })
 
+    it('should respond to a DELETE at /friendRequests/:id with deleting that friend request and a message saying "deleted"', async () => {
+        // friend request sent to user A from user B
+        const request = await mockRequest.post('/friends/1').auth(`${BToken}`, { type: 'bearer' });
+        // friend request from user B deleted by user A
+        const response = await mockRequest.delete('/friendRequests/2').auth(`${AToken}`, { type: 'bearer' });
+        expect(response.body.message).toBe('deleted');
+        expect(response.status).toBe(202);
+    })
 
     it("should respond to a GET at /friends with a list of all a user's friends ", async () => {
         // friend request sent to user A from user B
@@ -115,14 +113,14 @@ describe('FRIEND ROUTES', () => {
         expect(response.status).toBe(202);
     })
 
-    it("should respond to a DELETE at /blockFriend/:id by removing the friend relationship from the DB and adding a blocked relationship to the DB ", async () => {
+    xit("should respond to a DELETE at /blockFriend/:id by removing the friend relationship from the DB and adding a blocked relationship to the DB ", async () => {
         // friend request sent to user A from user B
         const request = await mockRequest.post('/friends/1').auth(`${BToken}`, { type: 'bearer' });
         console.log('@@@@TEST@@@@', request);
         // friend request from user B accepted by user A
         await mockRequest.post('/friendRequests/2').auth(`${AToken}`, { type: 'bearer' });
         // user B is blocked by user A
-        const response = await mockRequest.delete('/blockFriend/2').auth(`${AToken}`, { type: 'bearer' });
+        const response = await mockRequest.delete('/blockFriend/1').auth(`${BToken}`, { type: 'bearer' });
 
         expect(response.status).toBe(202)
         expect(response.body).toBe('Friend has been successfully blocked')
