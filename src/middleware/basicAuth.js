@@ -2,7 +2,7 @@
 var createError = require('http-errors');
 
 const base64 = require('base-64');
-const { User } = require('../schemas/index');
+const { User } = require('../schemas/index.js');
 
 module.exports = async (req, res, next) => {
   if (!req.headers.authorization) {

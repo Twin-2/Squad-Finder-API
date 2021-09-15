@@ -68,6 +68,11 @@ User.belongsToMany(User, {
 });
 
 User.belongsToMany(User, {
+  as: 'BlockedUsers',
+  through: 'blockedusers',
+});
+
+User.belongsToMany(User, {
   as: 'Requestees',
   through: 'friendRequests',
   foreignKey: 'requesterId',
