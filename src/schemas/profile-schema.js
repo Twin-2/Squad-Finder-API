@@ -7,7 +7,6 @@ const profileModel = (sequelize, DataTypes) => {
     bio: { type: DataTypes.STRING, required: true },
     games: { type: DataTypes.ENUM('Madden', 'Fortnite', 'Minecraft', 'League of Legends'), required: true, defaultValue: 'Minecraft' },
   });
-
   return model
 }
 
