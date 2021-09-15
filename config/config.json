@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "rachaelrice",
+    "password": null,
+    "database": "squadfinder",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "sqlite3"
+  },
+  "production": {
+    "username": "rachaelrice",
+    "password": null,
+    "database": "squadfinder",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  }
+}
