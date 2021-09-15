@@ -5,7 +5,7 @@ const supertest = require('supertest');
 const { app } = require('../../src/server.js');
 const { db, User } = require('../../src/schemas/index.js');
 
-const mockRequest = supertest(app)
+const mockRequest = supertest(app);
 
 let AToken;
 let BToken;
@@ -13,20 +13,27 @@ let CToken;
 let DToken;
 
 beforeEach(async () => {
-    await db.sync();
-    const A = await mockRequest.post('/signup').send({ username: "a", password: "a" })
-    const B = await mockRequest.post('/signup').send({ username: "b", password: "b" })
-    const C = await mockRequest.post('/signup').send({ username: "c", password: "c" })
-    const D = await mockRequest.post('/signup').send({ username: "d", password: "d" })
+  await db.sync();
+  const A = await mockRequest
+    .post('/signup')
+    .send({ username: 'a', password: 'a' });
+  const B = await mockRequest
+    .post('/signup')
+    .send({ username: 'b', password: 'b' });
+  const C = await mockRequest
+    .post('/signup')
+    .send({ username: 'c', password: 'c' });
+  const D = await mockRequest
+    .post('/signup')
+    .send({ username: 'd', password: 'd' });
 
-    AToken = A.body.token;
-    BToken = B.body.token;
-    CToken = C.body.token;
-    DToken = D.body.token;
-
+  AToken = A.body.token;
+  BToken = B.body.token;
+  CToken = C.body.token;
+  DToken = D.body.token;
 });
 afterEach(async () => {
-    await db.drop();
+  await db.drop();
 });
 
 describe('FRIEND ROUTES', () => {
