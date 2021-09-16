@@ -6,7 +6,7 @@ const authRouter = express.Router();
 const basicAuth = require('../middleware/basicAuth');
 const createError = require('http-errors');
 
-authRouter.post('/signup', async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     console.log(req.body)
     let userRecord = await User.create(req.body);
@@ -23,9 +23,9 @@ authRouter.post('/signup', async (req, res, next) => {
       createError(406, 'You need both username and password to sign up')
     );
   }
-});
+};
 
-authRouter.post('/signin', basicAuth, async (req, res, next) => {
+const signin = async (req, res, next) => {
   try {
     console.log(req.body)
     const user = {
@@ -36,6 +36,9 @@ authRouter.post('/signin', basicAuth, async (req, res, next) => {
   } catch (e) {
     return next(createError(500, err.message));
   }
-});
+};
+
+authRouter.post('/signup', signup);
+authRouter.post('/signin', basicAuth, signin)
 
 module.exports = authRouter;

@@ -120,7 +120,12 @@ achievementsRouter.post(
   acl('create'),
   handleCreate
 );
-achievementsRouter.get('/achievements', bearerAuth, acl('read'), handleGetAll);
+achievementsRouter.get(
+  '/achievements',
+  bearerAuth,
+  acl('read'),
+  handleGetAll
+);
 achievementsRouter.get(
   '/achievements/:id',
   bearerAuth,

@@ -11,6 +11,9 @@
     "test": "NODE_ENV=test jest --coverage --verbose --runInBand",
     "test-watch": "jest --watchAll --coverage"
   },
+  "engines": {
+    "node": "14.16.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Javascript-Code-Fellowship/Squad-Finder-API.git"
@@ -35,8 +38,10 @@
     "pg": "^8.7.1",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0",
-    "sqlite3": "^5.0.2",
     "supertest": "^6.1.6",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.0.2"
   }
 }
