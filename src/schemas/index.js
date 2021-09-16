@@ -29,36 +29,28 @@ const Squad = squadModel(sequelize, DataTypes);
 const Achievement = achievementModel(sequelize, DataTypes);
 const Profile = profileModel(sequelize, DataTypes);
 
-// Creates a many-to-many relationship between User and squads
-// A Squad has many User and a User has many Squads
 User.belongsToMany(Squad, {
   through: 'team',
   onDelete: 'cascade',
 });
 
-Squad.belongsTo(User);
-// Creates a one-to-many relationship between Profile and Achievement
-// A Profile has many Achievement and Achievement belong to one
-
-// Profile
+Squad.belongsToMany(User, {
+  through: 'team',
+  onDelete: 'cascade',
+});
 
 Profile.hasMany(Achievement, {
   onDelete: 'cascade',
 });
 
 Achievement.belongsTo(Profile);
-// Creates a one-to-one relationship between User and Profile
 
-// A User has one Profile and a Profile belongs to one User
 User.hasOne(Profile, {
   onDelete: 'cascade',
 });
 
 Profile.belongsTo(User);
-// Cretes a many-to-many relationship between User
-// A User has many User
-// This allows the creation of Friends through a junction table called
-// friends
+
 User.belongsToMany(User, {
   as: 'Friends',
   through: 'friends',

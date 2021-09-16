@@ -7,20 +7,42 @@ const squadRouter = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const createError = require('http-errors');
 
-squadRouter.get('/squads', bearerAuth, async (req, res, next) => {
+const getUserSquads = async (req, res, next) => {
+  const user = await User.findOne({ where: { username: req.user.username } });
+  let userSquadIds;
   try {
-    const user = await User.findOne({ where: { username: req.user.username } });
-    const squads = await user.getSquads();
-    const team = await db.models.team.findAll({
-      where: { SquadId: squads[0].id },
+    let squads = await db.models.team.findAll({ where: { UserId: user.id } });
+
+    userSquadIds = squads.map((row) => {
+      return row.SquadId;
     });
-    res.status(200).json(team);
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
 
-squadRouter.post('/squads', bearerAuth, async (req, res, next) => {
+  try {
+    let arr = [];
+    for (let x = 0; x < userSquadIds.length; x++) {
+      let members = await db.models.team.findAll({
+        where: { SquadId: userSquadIds[x] },
+      });
+      let memberIds = members.map((member) => {
+        return member.UserId;
+      });
+      let groupMembers = [];
+      for (let x = 0; x < memberIds.length; x++) {
+        let user = await User.findOne({ where: { id: memberIds[x] } });
+        groupMembers.push(user.username);
+      }
+      arr.push(groupMembers);
+    }
+    res.status(200).json({ squads: arr });
+  } catch (err) {
+    return next(createError(403, err.message));
+  }
+};
+
+const createSquad = async (req, res, next) => {
   try {
     const newSquad = await db.models.Squads.create({
       name: uuidv4(),
@@ -28,26 +50,30 @@ squadRouter.post('/squads', bearerAuth, async (req, res, next) => {
     });
 
     const user = await User.findOne({ where: { username: req.user.username } });
-    await user.addSquads(newSquad);
+    await user.addSquads(newSquad); //sequelize magic happens here
     let squadmates = req.body.squadmates;
     squadmates.forEach(async (squadmate) => {
       const user = await User.findOne({ where: { username: squadmate } });
-      console.log(user);
-      await user.addSquads(newSquad);
+      await user.addSquads(newSquad); // same sequelize stuff
     });
-    res.status(201).json({ message: 'squad created' });
+    res.status(201).json({
+      message: `Created a new squad with ${req.body.squadmates.join(
+        ', '
+      )} and ${req.user.username}`,
+    });
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
+};
 
-squadRouter.delete('/squads', bearerAuth, async (req, res, next) => {
+const deleteSquad = async (req, res, next) => {
   let user = await User.findOne({ where: { username: req.user.username } });
   let { SquadId } = req.body;
   try {
     let squad = await user.getSquads({ where: { id: SquadId } });
     if (squad[0].owner == req.user.username) {
       await db.models.team.destroy({ where: { SquadId } });
+      await db.models.Squads.destroy({ where: { id: SquadId } });
       res.status(202).json({ message: 'Deleted successfully' });
     } else {
       return next(createError(403, 'You can only delete squads that you own!'));
@@ -55,7 +81,12 @@ squadRouter.delete('/squads', bearerAuth, async (req, res, next) => {
   } catch (err) {
     return next(createError(403, err.message));
   }
-});
+};
+
+squadRouter.get('/squads', bearerAuth, getUserSquads);
+
+squadRouter.post('/squads', bearerAuth, createSquad);
+
+squadRouter.delete('/squads', bearerAuth, deleteSquad);
 
 module.exports = squadRouter;
-//

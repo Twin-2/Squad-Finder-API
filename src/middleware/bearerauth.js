@@ -4,7 +4,6 @@ const { User } = require('../schemas/index');
 
 module.exports = async (req, res, next) => {
   try {
-    console.log('here');
     if (!req.headers.authorization) {
       return next(createError(403, 'Authentication Error'));
     }
