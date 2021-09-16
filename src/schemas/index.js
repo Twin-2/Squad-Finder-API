@@ -14,12 +14,17 @@ let sequelizeOptions =
   process.env.NODE_ENV === 'production'
     ? {
         dialect: 'postgres',
-        protocol: 'postgres',
-        dialectOptions: {},
+        host: process.env.RDS_HOSTNAME,
+        user: process.env.RDS_USERNAME,
+        password: process.env.RDS_PASSWORD,
+        port: process.env.RDS_PORT,
       }
     : {};
 
-const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
+const sequelize =
+  process.env.NODE_ENV === 'production'
+    ? new Sequelize(sequelizeOptions)
+    : new Sequelize(DATABASE_URL);
 
 const User = userModel(sequelize, DataTypes);
 const Squad = squadModel(sequelize, DataTypes);
