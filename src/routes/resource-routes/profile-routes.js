@@ -11,8 +11,9 @@ const acl = require('../../middleware/acl.js');
 const handleCreate = async (req, res, next) => {
   try {
     let userid = req.user.id;
+    let username = req.user.username
     let { bio, game } = req.body;
-    let record = await Profile.create({ bio, game, UserId: userid });
+    let record = await Profile.create({ bio, game, UserId: userid, username: username });
     res.status(201).send(record);
   } catch (e) {
     return next(createError(500, 'Something went wrong'));

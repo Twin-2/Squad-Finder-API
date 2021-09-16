@@ -3,7 +3,7 @@
 require('dotenv').config();
 const supertest = require('supertest');
 const { app } = require('../../src/server.js');
-const { db, User } = require('../../src/schemas/index.js');
+const { db, User, Profile } = require('../../src/schemas/index.js');
 
 const mockRequest = supertest(app);
 
@@ -31,6 +31,23 @@ beforeEach(async () => {
   BToken = B.body.token;
   CToken = C.body.token;
   DToken = D.body.token;
+  await mockRequest
+    .post('/profile')
+    .auth(`${AToken}`, { type: 'bearer' })
+    .send({ bio: 'a', game: 'Mineraft' });
+  await mockRequest
+    .post('/profile')
+    .auth(`${BToken}`, { type: 'bearer' })
+    .send({ bio: 'b', game: 'Madden' });
+  await mockRequest
+    .post('/profile')
+    .auth(`${CToken}`, { type: 'bearer' })
+    .send({ bio: 'c', game: 'Madden' });
+  await mockRequest
+    .post('/profile')
+    .auth(`${DToken}`, { type: 'bearer' })
+    .send({ bio: 'd', game: 'Madden' });
+
 });
 afterEach(async () => {
   await db.drop();
@@ -58,9 +75,9 @@ describe('FRIEND ROUTES', () => {
     await mockRequest.post('/friendRequests/1').auth(`${BToken}`, { type: 'bearer' });
     await mockRequest.post('/friendRequests/1').auth(`${CToken}`, { type: 'bearer' });
     const response = await mockRequest.get('/friendRequests').auth(`${AToken}`, { type: 'bearer' });
-
     expect(response.body.length).toBe(2);
     expect(response.body).toBeDefined();
+    expect(response.body[0].username).toBeDefined();
     expect(response.status).toBe(200);
   })
 
@@ -88,6 +105,7 @@ describe('FRIEND ROUTES', () => {
     const response = await mockRequest.get('/friends').auth(`${AToken}`, { type: 'bearer' });
     expect(response.body.length).toBe(2);
     expect(response.status).toBe(202)
+    expect(response.body[0].username).toBeDefined();
   })
 
 
