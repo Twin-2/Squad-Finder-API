@@ -9,7 +9,8 @@ const mockRequest = supertest(app);
 
 beforeAll(async () => {
   await db.sync();
-  const user = await mockRequest.post('/signup').send({ username: "test", password: "password" })
+  const user1 = await mockRequest.post('/signup').send({ username: "test", password: "password" })
+  const user2 = await mockRequest.post('/signup').send({ username: "a", password: "password" })
 })
 
 afterAll(async () => {
@@ -33,7 +34,6 @@ describe('Profile Routes', () => {
     expect(route.status).toBe(200)
     expect(typeof route.body).toBe('object')
   })
-
 
   it('should response to a PUT request at /profile with a 202 and a profile object if the user is logged in', async() => {
     const request = await mockRequest.post('/signin').auth('test','password')
