@@ -26,7 +26,7 @@ const addFriendRequest = async (req, res, next) => {
 const getAllUsers = async (req, res, next) => {
     try {
         let users = await User.findAll({});
-        if (users.length === 0) {next(createError(404, 'No users found'))}
+        if (users.length === 0) { next(createError(404, 'No users found')) }
         res.status(201).send(users)
     } catch (err) {
         console.log(err)
@@ -42,7 +42,7 @@ const showAllRequests = async (req, res, next) => {
             let data = User.findOne({ where: { id: value.dataValues.requesterId } })
             return data
         }))
-        if (list.length === 0) {next(createError(404, 'No requests found'))}
+        if (list.length === 0) { next(createError(404, 'No requests found')) }
         res.status(200).send(list)
     } catch (err) {
         console.log(err)
@@ -61,26 +61,26 @@ const rejectRequest = async (req, res, next) => {
         }
         res.status(202).send(body)
     } catch (err) {
-      console.log(err);
-      next(createError(500, err.message));
+        console.log(err);
+        next(createError(500, err.message));
     }
 }
 
 const acceptRequest = async (req, res, next) => {
     try {
-      let id = req.params.id;
-      let userId = req.user.id;
-      let friends = await db.models.friends.create({
-        UserId: userId,
-        FriendId: id,
-      });
-      await db.models.friendRequests.destroy({
-        where: { requesterId: id, requesteeId: userId },
-      });
-      res.status(202).send(friends);
+        let id = req.params.id;
+        let userId = req.user.id;
+        let friends = await db.models.friends.create({
+            UserId: userId,
+            FriendId: id,
+        });
+        await db.models.friendRequests.destroy({
+            where: { requesterId: id, requesteeId: userId },
+        });
+        res.status(202).send(friends);
     } catch (err) {
-      console.log(err);
-      next(createError(500, err.message));
+        console.log(err);
+        next(createError(500, err.message));
     }
 }
 
@@ -129,7 +129,7 @@ const blockFriend = async (req, res, next) => {
     }
 }
 
-friendsRouter.get('/users', bearerAuth, getAllUsers)
+friendsRouter.get('/users', getAllUsers)
 friendsRouter.get('/friendRequests', bearerAuth, showAllRequests)
 friendsRouter.delete('/friendRequests/:id', bearerAuth, rejectRequest)
 friendsRouter.post('/friends/:id', bearerAuth, acceptRequest)
