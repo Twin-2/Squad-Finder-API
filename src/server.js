@@ -10,6 +10,10 @@ const profilerouter = require('./routes/resource-routes/profile-routes.js');
 const errorHandler = require('./error-handlers/errorHandler');
 const friendsRouter = require('./routes/resource-routes/friendsRoutes');
 const noRouteHandler = require('../src/error-handlers/404.js');
+const bp = require('body-parser')
+
+app.use(bp.json())
+app.use(bp.urlencoded({ extended: true }))
 
 app.use(express.json());
 app.use(cors());
