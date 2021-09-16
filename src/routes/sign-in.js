@@ -8,6 +8,7 @@ const createError = require('http-errors');
 
 const signup = async (req, res, next) => {
   try {
+    console.log(req.body)
     let userRecord = await User.create(req.body);
     const user = {
       user: userRecord,
@@ -26,6 +27,7 @@ const signup = async (req, res, next) => {
 
 const signin = async (req, res, next) => {
   try {
+    console.log(req.body)
     const user = {
       user: req.user,
       token: req.user.token,
