@@ -22,14 +22,7 @@ let sequelizeOptions =
       }
     : {};
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
-});
+const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
 
 const User = userModel(sequelize, DataTypes);
 const Squad = squadModel(sequelize, DataTypes);
