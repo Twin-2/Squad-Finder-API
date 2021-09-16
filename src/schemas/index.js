@@ -13,12 +13,9 @@ const DATABASE_URL =
 let sequelizeOptions =
   process.env.NODE_ENV === 'production'
     ? {
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
+        dialect: 'postgres',
+        protocol: 'postgres',
+        dialectOptions: {},
       }
     : {};
 
