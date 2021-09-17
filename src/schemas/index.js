@@ -10,21 +10,35 @@ const profileModel = require('./profile-schema.js');
 const DATABASE_URL =
   process.env.NODE_ENV === 'test' ? 'sqlite:memory' : process.env.DATABASE_URL;
 
+//This was for AWS. Couldn't get it working. RIP
+// let sequelizeOptions =
+//   process.env.NODE_ENV === 'production'
+//     ? {
+//         dialect: 'postgres',
+//         host: process.env.RDS_HOSTNAME,
+//         username: process.env.RDS_USERNAME,
+//         password: process.env.RDS_PASSWORD,
+//         port: process.env.RDS_PORT,
+//       }
+//     : {};
+
+// const sequelize =
+//   process.env.NODE_ENV === 'production'
+//     ? new Sequelize(sequelizeOptions)
+//     : new Sequelize(DATABASE_URL);
 let sequelizeOptions =
   process.env.NODE_ENV === 'production'
     ? {
-        dialect: 'postgres',
-        host: process.env.RDS_HOSTNAME,
-        username: process.env.RDS_USERNAME,
-        password: process.env.RDS_PASSWORD,
-        port: process.env.RDS_PORT,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }
     : {};
 
-const sequelize =
-  process.env.NODE_ENV === 'production'
-    ? new Sequelize(sequelizeOptions)
-    : new Sequelize(DATABASE_URL);
+const sequelize = new Sequelize(DATABASE_URL, sequelizeOptions);
 
 const User = userModel(sequelize, DataTypes);
 const Squad = squadModel(sequelize, DataTypes);
