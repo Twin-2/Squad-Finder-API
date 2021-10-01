@@ -1,6 +1,6 @@
 # Squad-Finder-API
 
-Contributers: Jaya DeHart, David Whitmore, Jessica Parker, Rachael Rice, Gina Hobbs
+Contributors: Jaya DeHart, David Whitmore, Jessica Parker, Rachael Rice, Gina Hobbs
 
 ## Version 1.0.0
 
